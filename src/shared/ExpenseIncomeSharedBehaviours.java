@@ -6,24 +6,25 @@ public abstract class ExpenseIncomeSharedBehaviours {
     /**
      * @implNote YYYY-MM-DD format
      **/
-    private String date = "";
-    private String type = "";
-    private String name = "";
-    private String description = "";
-    private int amount = 0;
+    protected String date = "";
+    protected String type = "";
+    protected String name = "";
+    protected String description = "";
+    protected int amount = 0;
 
     @Override
     public String toString() {
         String formatString = """
-                    Expense:
-                        - date: {0}
-                        - type: {1}
-                        - name: {2}
-                        - description: {3}
-                        - amount: {4}
-                """;
+                -------------------------------
+                    - date: {0}
+                    - type: {1}
+                    - name: {2}
+                    - description: {3}
+                    - amount: {4}
+                -------------------------------
+                    """;
 
-        return MessageFormat.format(formatString, date, type, name, description, amount);
+        return MessageFormat.format(formatString, this.date, this.type, this.name, this.description, this.amount);
     }
 
     public String getDate() {
