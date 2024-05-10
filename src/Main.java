@@ -1,50 +1,46 @@
-import java.nio.charset.MalformedInputException;
 import java.util.Scanner;
 import java.text.MessageFormat;
 import java.time.LocalDate;
-import expense.Expense;
 import shared.ExpenseTypes;
 
 public class Main {
     static final ExpenseTypes TYPES = new ExpenseTypes();
 
-    public static void main(String[] args) throws MalformedInputException {
+    public static void main(String[] args) {
+
         LocalDate now = LocalDate.now();
-        Scanner keyboardScanner = new Scanner(System.in);
-
         int year = now.getYear();
-        String yearPrintLabelFormat = "Enter year or get current: ({0})";
-        System.out.println(MessageFormat.format(yearPrintLabelFormat, String.valueOf(year)));
-        String yearInput = keyboardScanner.nextLine();
-        if (yearInput != "") {
-            year = convertInputToInt(yearInput);
-        }
-
         int month = now.getMonthValue();
-        String monthPrintLabelFormat = "Enter month or get current: ({0})";
-        System.out.println(MessageFormat.format(monthPrintLabelFormat, String.valueOf(month)));
-        String monthInput = keyboardScanner.nextLine();
-        if (monthInput != "") {
-            month = convertInputToInt(monthInput);
-        }
-
         int date = now.getDayOfMonth();
-        String datePrintLabelFormat = "Enter month or get current: ({0})";
-        System.out.println(MessageFormat.format(datePrintLabelFormat, String.valueOf(date)));
-        String dateInput = keyboardScanner.nextLine();
-        if (dateInput != "") {
-            date = convertInputToInt(dateInput);
-        }
 
-        keyboardScanner.close();
+        try (Scanner keyboardScanner = new Scanner(System.in)) {
+            year = getTimeInput(year, "Enter year or get current: ({0})", keyboardScanner);
+            month = getTimeInput(month, "Enter month or get current: ({0})", keyboardScanner);
+            date = getTimeInput(date, "Enter month or get current: ({0})", keyboardScanner);
+        }
     }
 
-    static private int convertInputToInt(String input) {
-        try {
-            int parsedYearInput = Integer.parseInt(input);
-            return parsedYearInput;
-        } catch (NumberFormatException e) {
-            throw new NumberFormatException("----- [Must enter valid numberic year value] -----");
+    static private int getTimeInput(int defaultValue, String labelFormat, Scanner scanner) {
+        int result = defaultValue;
+
+        while (true) {
+            try {
+                System.out.println(MessageFormat.format(labelFormat, String.valueOf(defaultValue)));
+                String input = scanner.nextLine();
+
+                if (!input.equals("")) {
+                    result = Integer.parseInt(input);
+                }
+
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("----- [Must enter valid numberical value] -----");
+
+            } catch (Exception e) {
+                System.out.println("----- [There is some mistake. Try again] -----");
+            }
         }
+
+        return result;
     }
 }
