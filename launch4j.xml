@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <Identity Name="Codesomething.AssetTracker" Version="1.0.0.0" Publisher="CN=Software, O=Codesomething, C=VN"/>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>console</headerType>
+  <jar>D:\17.java\1.projects\java-personal-finance\bin\Main.jar</jar>
+  <outfile>D:\17.java\1.projects\java-personal-finance\MyFinance.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl></downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>true</stayAlive>
+  <restartOnCrash>true</restartOnCrash>
+  <manifest>D:\17.java\1.projects\java-personal-finance\bin\manifest.txt</manifest>
+  <icon>D:\17.java\1.projects\java-personal-finance\assets\favicon.ico</icon>
+  <jre>
+    <path>%JAVA_HOME%;%PATH%</path>
+    <requiresJdk>false</requiresJdk>
+    <requires64Bit>false</requires64Bit>
+    <minVersion></minVersion>
+    <maxVersion></maxVersion>
+  </jre>
+</launch4jConfig>

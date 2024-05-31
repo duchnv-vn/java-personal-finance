@@ -6,21 +6,12 @@ import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import enums.ExpenseType;
 import expense.Expense;
 
 public class MyApp {
     static final String CSV_DIR_NAME = "csvOutput";
-    static final String[] EXPENSE_TYPES = {
-            "food",
-            "moving",
-            "family",
-            "beauty",
-            "household",
-            "entertainment",
-            "education",
-            "bill",
-            "others",
-    };
 
     public static void main(String[] args) {
         LocalDate now = LocalDate.now();
@@ -157,8 +148,8 @@ public class MyApp {
 
     static private String getTypeInput(Scanner scanner) {
         System.out.println("\nSelect expense type index number");
-        for (int i = 0; i < EXPENSE_TYPES.length; i++) {
-            System.out.println("[" + i + "]" + " " + EXPENSE_TYPES[i]);
+        for (var type : ExpenseType.values()) {
+            System.out.println(MessageFormat.format("[{0}] {1}", type.ordinal(), type.name()));
         }
 
         String result;
@@ -177,7 +168,7 @@ public class MyApp {
                 }
 
                 int index = Integer.parseInt(input);
-                result = EXPENSE_TYPES[index];
+                result = ExpenseType.values()[index].name();
                 break;
             } catch (ArrayIndexOutOfBoundsException e) {
                 System.out.println("\n----- [Invalid index value] -----");
