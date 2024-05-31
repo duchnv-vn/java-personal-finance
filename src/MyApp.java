@@ -98,7 +98,7 @@ public class MyApp {
         }
     }
 
-    static private int writeFile(String yyyymmDate, String yyyymmddDate, ArrayList<Expense> expenses) throws Exception {
+    private static int writeFile(String yyyymmDate, String yyyymmddDate, ArrayList<Expense> expenses) throws Exception {
         var filePath = MessageFormat.format(FILE_DIR_FORMAT, CSV_DIR_NAME, yyyymmDate);
 
         var file = new File(filePath);
