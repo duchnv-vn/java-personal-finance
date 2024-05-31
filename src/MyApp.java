@@ -8,11 +8,16 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import enums.CustomDateFormat;
-import enums.ExpenseType;
+import enums.PrintMessage;
 import expense.Expense;
+
+import static utils.MsgUtils.*;
+import static utils.InputUtils.*;
 
 public class MyApp {
     static final String CSV_DIR_NAME = "csvOutput";
+    static final String FILE_DIR_FORMAT = "./{0}/{1}.csv";
+    static final String CSV_HEADER = "date,type,name,amount,description\n";
 
     public static void main(String[] args) {
         LocalDate now = LocalDate.now();
@@ -21,9 +26,9 @@ public class MyApp {
         var date = now.getDayOfMonth();
 
         try (var keyboardScanner = new Scanner(System.in)) {
-            year = getNumberInput(keyboardScanner, "\nEnter year or get current: ({0})", year);
-            month = getNumberInput(keyboardScanner, "\nEnter month or get current: ({0})", month);
-            date = getNumberInput(keyboardScanner, "\nEnter month or get current: ({0})", date);
+            year = getNumberInput(keyboardScanner, getprintMsg(PrintMessage.ENTER_YEAR), year);
+            month = getNumberInput(keyboardScanner, getprintMsg(PrintMessage.ENTER_MONTH), month);
+            date = getNumberInput(keyboardScanner, getprintMsg(PrintMessage.ENTER_DATE), date);
 
             var yyyymmddDate = MessageFormat.format(
                     CustomDateFormat.YYYYMMDD.getFormat(), String.valueOf(year),
@@ -37,7 +42,9 @@ public class MyApp {
             var expenses = createExpense(keyboardScanner, yyyymmddDate);
 
             var totalAmount = writeFile(yyyymmDate, yyyymmddDate, expenses);
-            System.out.println(MessageFormat.format("\n----- [Created expenses for {0}: {1}] -----", yyyymmddDate,
+            System.out.println(MessageFormat.format(
+                    getprintMsg(PrintMessage.CREATE_SUCCESS),
+                    yyyymmddDate,
                     totalAmount));
         } catch (Exception e) {
         }
@@ -54,29 +61,29 @@ public class MyApp {
                 if (checkToReset(type))
                     continue;
 
-                var name = getStringInput(scanner, "\nEnter expense name", true);
+                var name = getStringInput(scanner, getprintMsg(PrintMessage.ENTER_EXPENSE_NAME), true);
                 if (checkToStop(name))
                     break;
                 if (checkToReset(name))
                     continue;
 
-                var amount = getNumberInput(scanner, "\nEnter expense amount", 0);
+                var amount = getNumberInput(scanner, getprintMsg(PrintMessage.ENTER_EXPENSE_AMOUNT), 0);
                 if (checkToStop(amount))
                     break;
                 if (checkToReset(amount))
                     continue;
 
-                var description = getStringInput(scanner, "\nEnter expense description", false);
+                var description = getStringInput(scanner, getprintMsg(PrintMessage.ENTER_EXPENSE_DESC), false);
                 if (checkToStop(description))
                     break;
                 if (checkToReset(description))
                     continue;
 
                 var expense = new Expense(yyyymmddDate, type, name, description, amount);
-                System.out.println("\nNew expense:\n" + expense.toString());
                 expenses.add(expense);
+                printMsg(PrintMessage.NEW_EXPENSE + "\n" + expense.toString());
 
-                System.out.println("\nSdd more expense? (y/n)");
+                printMsg(PrintMessage.ADD_MORE_EXPENSE);
                 var isContinue = scanner.nextLine();
 
                 if (isContinue.equals("n")) {
@@ -86,24 +93,22 @@ public class MyApp {
 
             return expenses;
         } catch (Exception e) {
-            System.out.println("\n----- [Create expense failed] -----");
+            printMsg(PrintMessage.CREATE_FAIL);
             throw e;
         }
     }
 
     static private int writeFile(String yyyymmDate, String yyyymmddDate, ArrayList<Expense> expenses) throws Exception {
-        var filePathFormat = "./{0}/{1}.csv";
-        var filePath = MessageFormat.format(filePathFormat, CSV_DIR_NAME, yyyymmDate);
+        var filePath = MessageFormat.format(FILE_DIR_FORMAT, CSV_DIR_NAME, yyyymmDate);
 
         var file = new File(filePath);
         if (!file.exists()) {
             try {
                 file.createNewFile();
-                var header = "date,type,name,amount,description\n";
-                Files.write(Paths.get(filePath), header.getBytes(), StandardOpenOption.APPEND);
+                Files.write(Paths.get(filePath), CSV_HEADER.getBytes(), StandardOpenOption.APPEND);
 
             } catch (Exception e) {
-                System.out.println("\n----- [Create new file failed] -----");
+                printMsg(PrintMessage.CREATE_NEW_FILE_FIELD);
                 throw e;
             }
         }
@@ -119,120 +124,10 @@ public class MyApp {
 
                 Files.write(Paths.get(filePath), row.getBytes(), StandardOpenOption.APPEND);
             } catch (Exception e) {
-                System.out.println("\n----- [Write file failed] -----");
+                printMsg(PrintMessage.WRITE_FILE_FIELD);
                 throw e;
             }
         }
         return totalAmount;
     }
-
-    static private String getStringInput(Scanner scanner, String label, boolean isRequired) {
-        System.out.println(label);
-
-        String result = "";
-
-        while (true) {
-            try {
-                result = scanner.nextLine();
-
-                if (isRequired && result.equals("")) {
-                    continue;
-                }
-
-                break;
-            } catch (Exception e) {
-                System.out.println("\n----- [There is some mistake] -----");
-            }
-        }
-
-        return result;
-    }
-
-    static private String getTypeInput(Scanner scanner) {
-        System.out.println("\nSelect expense type index number");
-        for (var type : ExpenseType.values()) {
-            System.out.println(MessageFormat.format("[{0}] {1}", type.ordinal(), type.name()));
-        }
-
-        String result;
-
-        while (true) {
-            try {
-                var input = scanner.nextLine();
-
-                if (checkToStop(input)) {
-                    result = "stop";
-                    break;
-                }
-                if (checkToReset(input)) {
-                    result = "reset";
-                    break;
-                }
-
-                int index = Integer.parseInt(input);
-                result = ExpenseType.values()[index].name();
-                break;
-            } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println("\n----- [Invalid index value] -----");
-
-            } catch (NumberFormatException e) {
-                System.out.println("\n----- [Must enter valid numberical value] -----");
-
-            } catch (Exception e) {
-                System.out.println("\n----- [There is some mistake] -----");
-            }
-        }
-
-        return result;
-    }
-
-    static private int getNumberInput(Scanner scanner, String labelFormat, int defaultValue) {
-        int result = defaultValue;
-
-        while (true) {
-            try {
-                System.out.println(MessageFormat.format(labelFormat, String.valueOf(defaultValue)));
-                String input = scanner.nextLine();
-
-                if (checkToStop(input)) {
-                    result = -1;
-                    break;
-                }
-                if (checkToReset(input)) {
-                    result = -2;
-                    break;
-                }
-
-                if (!input.equals("")) {
-                    result = Integer.parseInt(input);
-                }
-
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("\n----- [Must enter valid numberical value] -----");
-
-            } catch (Exception e) {
-                System.out.println("\n----- [There is some mistake] -----");
-            }
-        }
-
-        return result;
-    }
-
-    static private boolean checkToStop(String value) {
-        return value.equals("stop");
-    }
-
-    static private boolean checkToStop(int value) {
-        return value == -1;
-    }
-
-    static private boolean checkToReset(String value) {
-        return value.equals("reset");
-    }
-
-    static private boolean checkToReset(int value) {
-        return value == -2;
-    }
-
 }

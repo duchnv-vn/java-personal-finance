@@ -10,6 +10,11 @@ public enum CustomDateFormat {
         this.format = format;
     }
 
+    @Override
+    public String toString() {
+        return format;
+    }
+
     public String getFormat() {
         return format;
     }
