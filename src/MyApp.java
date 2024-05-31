@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import enums.CustomDateFormat;
 import enums.ExpenseType;
 import expense.Expense;
 
@@ -24,12 +25,13 @@ public class MyApp {
             month = getNumberInput(keyboardScanner, "\nEnter month or get current: ({0})", month);
             date = getNumberInput(keyboardScanner, "\nEnter month or get current: ({0})", date);
 
-            var yyyymmddFormat = "{0}-{1}-{2}";
-            var yyyymmFormat = "{0}-{1}";
-            var yyyymmddDate = MessageFormat.format(yyyymmddFormat, String.valueOf(year),
+            var yyyymmddDate = MessageFormat.format(
+                    CustomDateFormat.YYYYMMDD.getFormat(), String.valueOf(year),
                     String.valueOf(month), String.valueOf(date));
             var yyyymmDate = MessageFormat.format(
-                    yyyymmFormat, String.valueOf(year),
+                    CustomDateFormat.YYYYMM
+                            .getFormat(),
+                    String.valueOf(year),
                     String.valueOf(month));
 
             var expenses = createExpense(keyboardScanner, yyyymmddDate);
