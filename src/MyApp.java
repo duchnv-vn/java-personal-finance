@@ -106,9 +106,8 @@ public class MyApp {
             try {
                 file.createNewFile();
                 Files.write(Paths.get(filePath), CSV_HEADER.getBytes(), StandardOpenOption.APPEND);
-
             } catch (Exception e) {
-                printMsg(PrintMessage.CREATE_NEW_FILE_FIELD);
+                printMsg(PrintMessage.CREATE_NEW_FILE_FAIL);
                 throw e;
             }
         }

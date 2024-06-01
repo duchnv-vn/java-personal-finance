@@ -13,7 +13,7 @@ public enum PrintMessage {
     ADD_MORE_EXPENSE("Add more expense? (y/n)"),
 
     CREATE_FAIL("Create expense failed"),
-    CREATE_NEW_FILE_FIELD("Create new file failed"),
+    CREATE_NEW_FILE_FAIL("Create new file failed"),
     WRITE_FILE_FIELD("Write file failed"),
     THERE_IS_SOME_MISSTAKE("There is some mistake"),
     INVALID_TYPE_INDEX("Invalid index value"),
